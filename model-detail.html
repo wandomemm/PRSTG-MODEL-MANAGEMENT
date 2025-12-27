@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Model Details | Prèstige</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Edit Mode Controls -->
+    <div class="edit-mode-bar" id="editModeBar">
+        <div class="edit-controls">
+            <span class="edit-status">
+                <i class="fas fa-edit"></i> Edit Mode: ON
+            </span>
+            <button onclick="saveModelEdits()" class="edit-save-btn">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            <button onclick="discardEdits()" class="edit-discard-btn">
+                <i class="fas fa-times"></i> Discard
+            </button>
+            <button onclick="deleteCurrentModel()" class="edit-delete-btn">
+                <i class="fas fa-trash"></i> Delete Model
+            </button>
+            <button onclick="toggleEditMode()" class="edit-close-btn">
+                <i class="fas fa-times-circle"></i> Exit Edit
+            </button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <h1>PRÈSTIGE</h1>
+                    <span class="subtitle">MODEL MANAGEMENT</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="index.html#models">MODELS</a></li>
+                    <li><a href="index.html#new-faces">NEW FACES</a></li>
+                    <li>
+                        <button class="edit-toggle-btn" onclick="toggleEditMode()">
+                            <i class="fas fa-edit"></i> Edit Mode
+                        </button>
+                    </li>
+                </ul>
+                <div class="hamburger" onclick="toggleMenu()">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Model Detail Content -->
+    <main class="model-detail-container" id="modelDetailContainer">
+        <div class="container">
+            <!-- Back and Edit Buttons -->
+            <div class="detail-header">
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Models
+                </a>
+                <div class="detail-actions">
+                    <button class="print-btn" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print Portfolio
+                    </button>
+                    <button class="share-btn" onclick="shareModel()">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
+                </div>
+            </div>
+
+            <!-- Model Content -->
+            <div class="model-detail-content">
+                <!-- Left Side: Images Gallery -->
+                <div class="model-images-section">
+                    <div class="main-image-container">
+                        <img id="mainModelImage" src="" alt="Model Main Image" class="main-model-image">
+                        <div class="image-controls">
+                            <button class="image-nav prev" onclick="prevImage()">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="image-counter" id="imageCounter">1 / 1</span>
+                            <button class="image-nav next" onclick="nextImage()">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Image Gallery -->
+                    <div class="image-gallery" id="imageGallery">
+                        <!-- Thumbnails will be loaded here -->
+                    </div>
+                    
+                    <!-- Add More Images (Edit Mode) -->
+                    <div class="add-images-section" id="addImagesSection" style="display: none;">
+                        <h4><i class="fas fa-plus-circle"></i> Add More Images</h4>
+                        <input type="file" id="addMoreImages" accept="image/*" multiple 
+                               class="file-input" onchange="previewNewImages(event)">
+                        <div class="new-images-preview" id="newImagesPreview"></div>
+                        <button onclick="uploadNewImages()" class="upload-images-btn">
+                            <i class="fas fa-upload"></i> Upload Images
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Side: Details & Documents -->
+                <div class="model-info-section">
+                    <!-- Model Header -->
+                    <div class="model-header">
+                        <h1 id="modelNameDisplay" contenteditable="false">Loading...</h1>
+                        <div class="model-category" id="modelCategoryDisplay"></div>
+                        <div class="model-stats">
+                            <span class="stat">
+                                <i class="fas fa-camera"></i>
+                                <span id="imageCount">0</span> photos
+                            </span>
+                            <span class="stat">
+                                <i class="fas fa-file-alt"></i>
+                                <span id="documentCount">0</span> documents
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Editable Description -->
+                    <div class="description-section">
+                        <h3>
+                            <i class="fas fa-align-left"></i> Description
+                            <button class="edit-icon" onclick="enableEdit('modelDescription')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </h3>
+                        <div class="description-content">
+                            <div id="modelDescription" contenteditable="false" class="editable-text">
+                                No description available.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Measurements -->
+                    <div class="measurements-section">
+                        <h3>
+                            <i class="fas fa-ruler-combined"></i> Measurements
+                            <button class="edit-icon" onclick="enableEdit('measurements')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </h3>
+                        <div class="measurements-grid" id="measurements" contenteditable="false">
+                            <div class="measurement-item">
+                                <span class="label">Height:</span>
+                                <span class="value">178 cm</span>
+                            </div>
+                            <div class="measurement-item">
+                                <span class="label">Bust/Chest:</span>
+                                <span class="value">86 cm</span>
+                            </div>
+                            <div class="measurement-item">
+                                <span class="label">Waist:</span>
+                                <span class="value">61 cm</span>
+                            </div>
+                            <div class="measurement-item">
+                                <span class="label">Hips:</span>
+                                <span class="value">89 cm</span>
+                            </div>
+                            <div class="measurement-item">
+                                <span class="label">Shoes:</span>
+                                <span class="value">EU 39</span>
+                            </div>
+                            <div class="measurement-item">
+                                <span class="label">Eyes:</span>
+                                <span class="value">Blue</span>
+                            </div>
+                            <div class="measurement-item">
+                                <span class="label">Hair:</span>
+                                <span class="value">Blonde</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documents Section -->
+                    <div class="documents-section">
+                        <h3>
+                            <i class="fas fa-file-contract"></i> Documents & Contracts
+                            <button class="add-doc-btn" onclick="addDocument()">
+                                <i class="fas fa-plus"></i> Add Document
+                            </button>
+                        </h3>
+                        <div class="documents-list" id="documentsList">
+                            <!-- Documents will be loaded here -->
+                            <div class="empty-docs">
+                                <i class="fas fa-file-import fa-2x"></i>
+                                <p>No documents uploaded yet</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Document Upload (Edit Mode) -->
+                        <div class="upload-documents" id="uploadDocuments" style="display: none;">
+                            <input type="file" id="documentUpload" multiple 
+                                   accept=".pdf,.doc,.docx,.txt,.jpg,.png" class="file-input">
+                            <div class="doc-preview" id="docPreview"></div>
+                            <button onclick="uploadDocuments()" class="upload-docs-btn">
+                                <i class="fas fa-upload"></i> Upload Selected Files
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Model Details -->
+                    <div class="details-section">
+                        <h3>
+                            <i class="fas fa-info-circle"></i> Additional Details
+                            <button class="edit-icon" onclick="enableEdit('additionalDetails')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </h3>
+                        <div class="details-grid" id="additionalDetails" contenteditable="false">
+                            <div class="detail-item">
+                                <span class="label">Age:</span>
+                                <span class="value">24</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Nationality:</span>
+                                <span class="value">French</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Based In:</span>
+                                <span class="value">Paris, FR</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Availability:</span>
+                                <span class="value available">Available</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Experience:</span>
+                                <span class="value">3 years</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="notes-section">
+                        <h3>
+                            <i class="fas fa-sticky-note"></i> Internal Notes
+                            <button class="edit-icon" onclick="enableEdit('internalNotes')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </h3>
+                        <div class="notes-content">
+                            <div id="internalNotes" contenteditable="false" class="editable-text notes-text">
+                                Add internal notes here...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for Image View -->
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <img class="modal-image" id="modalImage" src="" alt="">
+            <div class="modal-caption" id="modalCaption"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PRÈSTIGE</h3>
+                    <p>Elite fashion model management.</p>
+                    <p class="model-id">
+                        Model ID: <span id="modelIdDisplay">N/A</span>
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>QUICK ACTIONS</h4>
+                    <button onclick="toggleEditMode()" class="footer-btn">
+                        <i class="fas fa-edit"></i> Toggle Edit Mode
+                    </button>
+                    <button onclick="window.print()" class="footer-btn">
+                        <i class="fas fa-print"></i> Print Profile
+                    </button>
+                </div>
+                <div class="footer-section">
+                    <p class="last-updated">
+                        Last updated: <span id="lastUpdated">Never</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
