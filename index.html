@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prèstige | Model Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Admin Controls -->
+    <div class="admin-controls" id="adminControls">
+        <button class="admin-btn" onclick="toggleAdminPanel()">
+            <i class="fas fa-cog"></i> Admin Panel
+        </button>
+        <div class="admin-panel" id="adminPanel">
+            <h3><i class="fas fa-user-plus"></i> Add New Model</h3>
+            <div class="admin-form">
+                <input type="text" id="modelName" placeholder="Model Full Name" class="admin-input">
+                <input type="text" id="modelCategory" placeholder="Category (Men/Women/New Faces)" class="admin-input">
+                <textarea id="modelDescription" placeholder="Description..." class="admin-textarea"></textarea>
+                
+                <div class="upload-section">
+                    <h4>Profile Image</h4>
+                    <input type="file" id="profileImage" accept="image/*" class="file-input">
+                    <div class="image-preview" id="profilePreview"></div>
+                </div>
+                
+                <div class="upload-section">
+                    <h4>Additional Images (Multiple)</h4>
+                    <input type="file" id="modelImages" accept="image/*" multiple class="file-input">
+                    <div class="image-preview" id="imagesPreview"></div>
+                </div>
+                
+                <div class="upload-section">
+                    <h4>Documents (PDF/DOC)</h4>
+                    <input type="file" id="modelDocuments" accept=".pdf,.doc,.docx" multiple class="file-input">
+                    <div id="documentsPreview"></div>
+                </div>
+                
+                <button onclick="addNewModel()" class="submit-btn">
+                    <i class="fas fa-plus"></i> Add Model
+                </button>
+                <button onclick="saveAllData()" class="save-btn">
+                    <i class="fas fa-save"></i> Save All Data
+                </button>
+                <button onclick="loadSampleData()" class="sample-btn">
+                    <i class="fas fa-magic"></i> Load Sample Models
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <h1>PRÈSTIGE</h1>
+                    <span class="subtitle">MODEL MANAGEMENT</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#" class="active">HOME</a></li>
+                    <li><a href="#models">MODELS</a></li>
+                    <li><a href="#new-faces">NEW FACES</a></li>
+                    <li><a href="#about">ABOUT</a></li>
+                    <li><a href="#contact">CONTACT</a></li>
+                    <li>
+                        <button class="search-btn" onclick="toggleSearch()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </li>
+                </ul>
+                <div class="hamburger" onclick="toggleMenu()">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </nav>
+            
+            <!-- Search Bar -->
+            <div class="search-bar" id="searchBar">
+                <input type="text" placeholder="Search models by name, category, or keyword..." 
+                       id="modelSearch" onkeyup="searchModels()">
+                <button class="clear-search" onclick="clearSearch()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="hero-section">
+                <h2>ELITE MODEL MANAGEMENT</h2>
+                <p>Discover and manage the finest fashion talent worldwide</p>
+            </div>
+            
+            <!-- Stats Section -->
+            <div class="stats-section">
+                <div class="stat-card">
+                    <h3 id="totalModels">0</h3>
+                    <p>Total Models</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="womenModels">0</h3>
+                    <p>Women</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="menModels">0</h3>
+                    <p>Men</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="newModels">0</h3>
+                    <p>New Faces</p>
+                </div>
+            </div>
+            
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="filter-tags">
+                    <button class="filter-btn active" onclick="filterModels('all')">ALL MODELS</button>
+                    <button class="filter-btn" onclick="filterModels('women')">WOMEN</button>
+                    <button class="filter-btn" onclick="filterModels('men')">MEN</button>
+                    <button class="filter-btn" onclick="filterModels('new')">NEW FACES</button>
+                    <button class="filter-btn" onclick="filterModels('exclusive')">EXCLUSIVE</button>
+                </div>
+                <div class="view-controls">
+                    <button class="view-btn active" onclick="changeView('grid')">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="view-btn" onclick="changeView('list')">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Model Grid -->
+            <div class="model-grid" id="modelGrid">
+                <!-- Models will be loaded here -->
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-users fa-3x"></i>
+                    <h3>No Models Added Yet</h3>
+                    <p>Use the Admin Panel (top right) to add your first model</p>
+                    <button onclick="toggleAdminPanel()" class="cta-btn">
+                        <i class="fas fa-user-plus"></i> Add First Model
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PRÈSTIGE</h3>
+                    <p>Elite fashion model management representing exceptional talent worldwide.</p>
+                    <p class="data-info">
+                        <i class="fas fa-database"></i> 
+                        Data is stored locally in your browser
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>CONTACT</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> New York | Paris | Milan</p>
+                    <p><i class="fas fa-envelope"></i> booking@prestige-models.com</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                </div>
+                <div class="footer-section">
+                    <h4>EXPORT DATA</h4>
+                    <button onclick="exportData()" class="export-btn">
+                        <i class="fas fa-download"></i> Export All Data
+                    </button>
+                    <button onclick="importData()" class="import-btn">
+                        <i class="fas fa-upload"></i> Import Data
+                    </button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Prèstige Model Management. All rights reserved.</p>
+                <p class="admin-note">Admin Panel: Click the gear icon in top right corner</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
